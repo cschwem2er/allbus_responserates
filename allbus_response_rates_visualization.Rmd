@@ -1,20 +1,23 @@
 ---
-title: "German General Social Survey Response Rates"
+title: "German General Social Survey (ALLBUS) Response Rates"
 author: "Carsten Schwemmer"
-date: "9/16/2019"
-output: html_document
+date: "11/11/2022"
+output: 
+  html_document: 
+    highlight: zenburn
+    theme: readable
 ---
 
 
 ## Libraries and Dataset
 
-The ALLBUS survey descriptions are available at https://www.gesis.org/allbus/inhalte-suche/studienprofile-1980-bis-2018
+The ALLBUS survey descriptions are available at https://www.gesis.org/allbus/inhalte-suche/studienprofile-1980-bis-2021
 
 ```{r message=FALSE, warning=FALSE}
 library(tidyverse)
 library(hrbrthemes)
 library(ggrepel)
-df <- read_csv('allbus_responserates_1980-2018.csv')
+df <- read_csv('allbus_responserates_1980-2021.csv')
 head(df)
 ```
 
@@ -22,28 +25,39 @@ head(df)
 
 
 ```{r message=FALSE, warning=FALSE}
-df <- df %>% mutate(toshow = ifelse(year %in% c(1980, 2018),
+df <- df %>% mutate(toshow = ifelse(year %in% c(1980, 2021),
                                     paste0(response_rate_total, '%'), NA))
-                    
+
 df %>% ggplot(aes(x = year, y = response_rate_total)) +
   geom_line(size = 1.25, color = '#377eb8') +
-  geom_point(size = 3, color = '#377eb8') + 
+  geom_point(size = 3, color = '#377eb8') +
   geom_text_repel(aes(label = toshow), nudge_y = 10) +
-  scale_y_continuous(labels = scales::percent_format(
-                                              scale = 1, accuracy = 1),
-                     limits = c(0, 100), breaks = 
-                       scales::pretty_breaks(n=7)) +
-    scale_x_continuous(breaks = scales::pretty_breaks(n = 16),
-                       expand = c(0.02,0)) +
-    theme_ipsum(grid = 'XY', base_size = 12,
-                axis_title_size = 11) + 
-  theme(axis.text.x = element_text(angle = 90)) + 
-  labs(x = 'Year', y = 'Response rate',
-       title = 'Decreasing Survey Response Rates in Germany',
-       subtitle = 'German General Social Survey (ALLBUS) response rates, 1980-2018',
-       caption = 'Own visualization based on ALLBUS survey descriptions, available at\n  https://www.gesis.org/allbus/inhalte-suche/studienprofile-1980-bis-2018')
+  scale_y_continuous(
+    labels = scales::percent_format(scale = 1, accuracy = 1),
+    limits = c(0, 100),
+    breaks =
+      scales::pretty_breaks(n = 7)
+  ) +
+  scale_x_continuous(breaks = scales::pretty_breaks(n = 16),
+                     expand = c(0.02, 0)) +
+  theme_ipsum(grid = 'XY',
+              base_size = 12,
+              axis_title_size = 11) +
+  theme(axis.text.x = element_text(angle = 90)) +
+  labs(
+    x = 'Year',
+    y = 'Response rate',
+    title = 'Decreasing Survey Response Rates in Germany',
+    subtitle = 'German General Social Survey (ALLBUS) response rates, 1980-2021',
+    caption = 'Own visualization based on ALLBUS survey descriptions, available at\n  https://www.gesis.org/allbus/inhalte-suche/studienprofile-1980-bis-2021'
+  )
 
-ggsave('allbus_responserates_1980-2018.png', width = 9, height = 7, 
-       dpi = 300)
+ggsave(
+  'allbus_responserates_1980-2021.jpeg',
+  width = 9,
+  height = 7,
+  dpi = 300,
+  bg = "white"
+)
 ```
 
